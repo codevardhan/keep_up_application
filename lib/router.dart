@@ -7,7 +7,6 @@ import 'ui/pages/settings_page.dart';
 import 'ui/pages/circles_page.dart';
 import 'ui/pages/circle_detail_page.dart';
 import 'ui/pages/contact_edit_page.dart';
-import 'package:flutter/material.dart';
 
 class AppRoutes {
   static const onboarding = '/';

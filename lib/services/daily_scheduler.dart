@@ -273,8 +273,8 @@ class DailyScheduler {
   static String _ymd(DateTime dt) =>
       '${dt.year.toString().padLeft(4, '0')}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
 
-  static String _hm(DateTime dt) =>
-      '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+  // static String _hm(DateTime dt) =>
+  //     '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
 }
 
 class _Scored {

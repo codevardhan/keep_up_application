@@ -64,7 +64,7 @@ class _ClaudeSuggestionSheetState extends State<ClaudeSuggestionSheet> {
   }
 
   void _beginStreaming() {
-    print("🔥 Starting Claude stream…");
+    // print("🔥 Starting Claude stream…");
 
     final stream = AiSuggestionService.streamClaudeSuggestion(
       goalType: widget.goalType,
@@ -73,7 +73,7 @@ class _ClaudeSuggestionSheetState extends State<ClaudeSuggestionSheet> {
     );
 
     _sub = stream.listen((chunk) {
-      print("🟣 UI received chunk: '$chunk'");
+      // print("🟣 UI received chunk: '$chunk'");
 
       // ---------------------------------------------------------
       // REMOVE "Message" / "Suggestion" header chunks from Claude
@@ -81,7 +81,7 @@ class _ClaudeSuggestionSheetState extends State<ClaudeSuggestionSheet> {
       if (generatedText.isEmpty) {
         final trimmed = chunk.trim();
         if (trimmed == "Message" || trimmed == "Suggestion") {
-          print("🧹 Removing header token: '$trimmed'");
+          // print("🧹 Removing header token: '$trimmed'");
           return; // skip this chunk entirely
         }
       }
@@ -106,10 +106,10 @@ class _ClaudeSuggestionSheetState extends State<ClaudeSuggestionSheet> {
         }
       });
     }, onDone: () {
-      print("✅ Claude streaming done");
+      // print("✅ Claude streaming done");
       if (mounted) setState(() => isDone = true);
     }, onError: (e) {
-      print("❌ STREAM ERROR: $e");
+      // print("❌ STREAM ERROR: $e");
 
       if (!mounted) return;
       setState(() {

@@ -30,9 +30,8 @@ class ContactsSync {
           final cleanedPhones = c.phones
               .map(
                 (p) =>
-                    (p.normalizedNumber != null &&
-                        p.normalizedNumber!.trim().isNotEmpty)
-                    ? p.normalizedNumber!
+                    (p.normalizedNumber.trim().isNotEmpty)
+                    ? p.normalizedNumber
                     : p.number,
               )
               .where((s) => s.trim().isNotEmpty)

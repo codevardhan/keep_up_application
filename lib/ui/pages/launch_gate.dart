@@ -13,7 +13,6 @@ class _LaunchGateState extends State<LaunchGate> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final state = InheritedAppState.of(context);
-    print(state.onboardingSeen);
     // Defer navigation to the next frame to avoid build-time nav
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final route = state.onboardingSeen

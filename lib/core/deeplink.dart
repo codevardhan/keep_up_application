@@ -45,7 +45,7 @@ Future<void> launchSms(
     return;
   }
   final hasBody = body != null && body.trim().isNotEmpty;
-  final encodedBody = hasBody ? Uri.encodeComponent(body!) : null;
+  final encodedBody = hasBody ? Uri.encodeComponent(body) : null;
 
   // Variants (ordered by likelihood)
   final noPlus = digits.startsWith('+') ? digits.substring(1) : digits;

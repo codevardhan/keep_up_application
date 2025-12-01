@@ -48,7 +48,7 @@ class _ComposePageState extends State<ComposePage> {
     required String? firstName,
     required String? goal,
   }) {
-    final name = (firstName == null || firstName.isEmpty) ? '' : '$firstName, ';
+    // final name = (firstName == null || firstName.isEmpty) ? '' : '$firstName, ';
     final g = (goal == null || goal.isEmpty) ? 'catch up' : 'talk about $goal';
 
     switch (tone) {
@@ -171,7 +171,7 @@ class _ComposePageState extends State<ComposePage> {
                 ),
                 margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Text(

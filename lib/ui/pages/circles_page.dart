@@ -32,7 +32,7 @@ class CirclesPage extends StatelessWidget {
             ),
           );
         },
-        separatorBuilder: (_, __) => const SizedBox(height: 8),
+        separatorBuilder: (_, _) => const SizedBox(height: 8),
         itemCount: circles.length,
       ),
       floatingActionButton: FloatingActionButton.extended(

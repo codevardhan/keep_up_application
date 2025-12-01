@@ -4,8 +4,8 @@ import 'daily_scheduler.dart';
 
 /// Triggers daily suggestions when app comes to foreground.
 class AppLifecycleObserver with WidgetsBindingObserver {
-  final AppState state;
-  AppLifecycleObserver(this.state);
+  final AppState currState;
+  AppLifecycleObserver(this.currState);
 
   void start() {
     WidgetsBinding.instance.addObserver(this);
@@ -16,10 +16,10 @@ class AppLifecycleObserver with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState s) {
-    if (s == AppLifecycleState.resumed) {
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
       // Fire and forget; suggestions show/schedule in background.
-      DailyScheduler.maybeRunToday(state, k: 1);
+      DailyScheduler.maybeRunToday(currState, k: 1);
     }
   }
 }

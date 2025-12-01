@@ -155,7 +155,7 @@ class _ContactEditPageState extends State<ContactEditPage> {
           // Time zone + preferred channel
           // Time zone (overflow-safe) + preferred channel
           DropdownButtonFormField<String>(
-            value: tz,
+            initialValue: tz,
             isExpanded: true, // ← use full width, prevents right overflow
             menuMaxHeight: 360,
             items: _tzOptions.map((s) {

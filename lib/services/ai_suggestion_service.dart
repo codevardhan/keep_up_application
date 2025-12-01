@@ -29,7 +29,6 @@ class AiSuggestionService {
       lastNote: lastNote,
     );
 
-    print(prompt);
     final ai = await AnthropicClient.callClaude(
       model: _model,
       system: _systemMessage,
@@ -81,7 +80,6 @@ class AiSuggestionService {
       daysSinceLast: daysSinceLast,
     );
 
-    print(prompt);
 
     final ai = await AnthropicClient.callClaude(
       model: _model,
