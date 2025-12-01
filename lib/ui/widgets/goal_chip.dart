@@ -1,3 +1,4 @@
+//goal_chip.dart - ui/pages/widgets
 import 'package:flutter/material.dart';
 import '../../models/goal.dart';
 

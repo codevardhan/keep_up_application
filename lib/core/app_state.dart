@@ -1,3 +1,4 @@
+// app_state.dart - lib/core
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 

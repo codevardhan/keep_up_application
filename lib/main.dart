@@ -2,8 +2,12 @@
 import 'package:flutter/material.dart';
 import 'router.dart';
 import 'core/app_state.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: "assets/env/.env");
   runApp(const KeepUpApp());
 }
 

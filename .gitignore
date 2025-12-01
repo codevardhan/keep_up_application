@@ -80,7 +80,8 @@ android/app/release
 .env
 .env.*
 .env.local
-secrets.dart
+assets/env/.env
+
 
 # ==========================================
 # Misc

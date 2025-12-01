@@ -1,3 +1,4 @@
+// app_contact.dart - lib/models
 class AppContact {
   final String id;
   final String displayName;

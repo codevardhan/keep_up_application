@@ -1,3 +1,4 @@
+// goal.dart - lib/models
 enum GoalType { internship, family, friends, wellness }
 
 class Goal {

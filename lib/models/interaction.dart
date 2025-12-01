@@ -1,3 +1,4 @@
+// interaction.dart - lib/models
 class Interaction {
   final String id; // uuid or timestamp-based
   final String contactId;
