@@ -143,7 +143,7 @@ class SettingsPage extends StatelessWidget {
 
                 await NotificationService.showSuggestionNow(
                   contactId: contact.id,
-                  title: 'Check in',
+                  title: 'Check in with ${contact.displayName}',
                   body: message, // full text visible in BigText
                   longText: message, // ensure expanded shows the same
                   prefilledMessage: message,
