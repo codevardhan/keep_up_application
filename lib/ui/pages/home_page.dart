@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import '../../../core/app_state.dart';
 import '../../../router.dart';
 import '../theme/app_theme.dart';
+import '../../../models/goal.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final state = InheritedAppState.of(context);
@@ -32,27 +37,22 @@ class HomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Date + tiny gear
                 Text(
                   _prettyDate(DateTime.now()),
                   style: AppText.small.copyWith(color: AppColors.neutral600),
                 ),
                 const SizedBox(height: 12),
 
-                // Goal card
                 _GoalCard(
                   title: 'Current goal',
                   goal: goalLabel,
-                  onEdit: () =>
-                      Navigator.pushNamed(context, AppRoutes.onboarding),
+                  onEdit: () => _showGoalPicker(context, state),
                 ),
                 const SizedBox(height: 14),
 
-                // Connections progress
                 _ConnectionsCard(done: weeklyDone, target: weeklyTarget),
                 const SizedBox(height: 18),
 
-                // Next steps header
                 Row(
                   children: [
                     Text('Next steps', style: AppText.h2),
@@ -66,11 +66,10 @@ class HomePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
 
-                // Quick entry points
                 _NextTile(
                   title: 'See suggestions',
                   subtitle: '2–3 people to reach out to',
-                  leading: _CircleIcon(
+                  leading: const _CircleIcon(
                     icon: Icons.auto_awesome,
                     bg: AppColors.purple100,
                     fg: AppColors.purple600,
@@ -82,7 +81,7 @@ class HomePage extends StatelessWidget {
                 _NextTile(
                   title: 'Manage circles',
                   subtitle: 'Members & reminder cadence',
-                  leading: _CircleIcon(
+                  leading: const _CircleIcon(
                     icon: Icons.people_alt_outlined,
                     bg: AppColors.teal100,
                     fg: AppColors.teal600,
@@ -97,13 +96,106 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  Future<void> _showGoalPicker(BuildContext context, AppState state) async {
+    GoalType selected = state.activeGoal?.type ?? GoalType.friends;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.sheet),
+      ),
+      builder: (ctx) {
+        final bottomInset = MediaQuery.of(ctx).viewInsets.bottom;
+        return SingleChildScrollView(
+          padding: EdgeInsets.only(bottom: bottomInset),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            child: StatefulBuilder(
+              builder: (ctx, setModal) => Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 12),
+                      decoration: BoxDecoration(
+                        color: AppColors.neutral200,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                    ),
+                  ),
+                  Text('Choose a goal', style: AppText.h2),
+                  const SizedBox(height: 8),
+                  Text(
+                    'This helps tailor suggestions and tone.',
+                    style: AppText.small.copyWith(color: AppColors.neutral600),
+                  ),
+                  const SizedBox(height: 12),
+
+                  ...GoalType.values.map((gt) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      decoration: AppDecor.card(),
+                      child: RadioListTile<GoalType>(
+                        value: gt,
+                        groupValue: selected,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                        ),
+                        title: Text(_goalLabel(gt), style: AppText.bodySemi),
+                        subtitle: Text(
+                          _goalHint(gt),
+                          style: AppText.small.copyWith(
+                            color: AppColors.neutral600,
+                          ),
+                        ),
+                        onChanged: (v) =>
+                            setModal(() => selected = v ?? selected),
+                      ),
+                    );
+                  }),
+
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text('Cancel'),
+                      ),
+                      const Spacer(),
+                      FilledButton(
+                        // no need for async here since we don’t await anything
+                        onPressed: () {
+                          state.setGoal(
+                            Goal(selected, _goalLabel(selected)),
+                          ); // <-- no await
+                          Navigator.pop(ctx);
+                        },
+                        child: const Text('Save'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   String _prettyDate(DateTime d) {
-    // e.g., Friday, November 14
     final wd = _wd[d.weekday]!;
     final month = _mo[d.month]!;
     return '$wd, $month ${d.day.toString().padLeft(2, '0')}';
   }
 }
+
+// ---------- UI widgets ----------
 
 class _GoalCard extends StatelessWidget {
   final String title;
@@ -131,18 +223,14 @@ class _GoalCard extends StatelessWidget {
           // title + edit
           Row(
             children: [
-              Row(
-                children: const [
-                  Icon(Icons.work_outline, color: Colors.white, size: 18),
-                  SizedBox(width: 8),
-                  Text(
-                    'Current goal',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+              const Icon(Icons.flag_outlined, color: Colors.white, size: 18),
+              const SizedBox(width: 8),
+              const Text(
+                'Current goal',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const Spacer(),
               InkWell(
@@ -339,3 +427,30 @@ const _mo = {
   11: 'November',
   12: 'December',
 };
+
+// Labels/hints for goals
+String _goalLabel(GoalType t) {
+  switch (t) {
+    case GoalType.internship:
+      return 'Find an internship';
+    case GoalType.family:
+      return 'Reconnect with family';
+    case GoalType.friends:
+      return 'Keep up with friends';
+    case GoalType.wellness:
+      return 'De-stress & balance';
+  }
+}
+
+String _goalHint(GoalType t) {
+  switch (t) {
+    case GoalType.internship:
+      return 'Career networking & check-ins';
+    case GoalType.family:
+      return 'Stay close to family';
+    case GoalType.friends:
+      return 'Light, regular touch points';
+    case GoalType.wellness:
+      return 'Gentle, supportive outreach';
+  }
+}

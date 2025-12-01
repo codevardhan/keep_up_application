@@ -46,6 +46,7 @@ class AppRadius {
   static const double card = 16;
   static const double chip = 12;
   static const double pill = 999;
+  static const double sheet = 24;
 }
 
 // --- Shadows ---------------------------------------------------------------
