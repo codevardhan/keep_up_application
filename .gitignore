@@ -1,45 +1,90 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
-
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# ==========================================
+# Flutter / Dart / Pub
+# ==========================================
 .dart_tool/
+.flutter-plugins
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
 /build/
-/coverage/
+**/doc/api/
+coverage/
 
-# Symbolication related
-app.*.symbols
+# ==========================================
+# macOS
+# ==========================================
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/Flutter/Flutter-Debug.xcconfig
+macos/Flutter/Flutter-Release.xcconfig
+macos/Flutter/GeneratedPluginRegistrant.swift
 
-# Obfuscation related
-app.*.map.json
+# Avoid committing Xcode user-specific files
+macos/Runner.xcworkspace/xcuserdata/
+macos/Runner.xcodeproj/project.xcworkspace/xcuserdata/
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# ==========================================
+# iOS
+# ==========================================
+ios/Pods/
+ios/Podfile.lock
+ios/.symlinks/
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/engine/
+ios/Flutter/Flutter.podspec
+ios/ServiceDefinitions.json
+
+# Xcode user data
+ios/Runner.xcworkspace/xcuserdata/
+ios/Runner.xcodeproj/project.xcworkspace/xcuserdata/
+
+# iOS build artifacts
+**/ios/Flutter/.last_build_id
+**/ios/Flutter/App.framework.dSYM
+**/ios/Flutter/Flutter.framework.dSYM
+
+# ==========================================
+# Android
+# ==========================================
+.android/
+*.iml
+android/.gradle/
+android/local.properties
+android/app/debug
+android/app/profile
+android/app/release
+
+# ==========================================
+# VSCode / IntelliJ / Xcode misc
+# ==========================================
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+
+# ==========================================
+# Logs / Temp
+# ==========================================
+*.log
+*.tmp
+*.swp
+*.pyc
+*.class
+
+# ==========================================
+# Environment / Secrets
+# ==========================================
+.env
+.env.*
+.env.local
+secrets.dart
+
+# ==========================================
+# Misc
+# ==========================================
+buildlog/
+.swiftpm/
+migrate_working_dir/
