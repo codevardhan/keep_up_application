@@ -55,7 +55,7 @@ class _KeepUpAppState extends State<KeepUpApp> {
       child: MaterialApp(
         title: 'KeepUp MVP',
         theme: AppTheme.light(),
-        initialRoute: AppRoutes.onboarding,
+        initialRoute: AppRoutes.launch,
         onGenerateRoute: AppRouter.onGenerateRoute,
       ),
     );

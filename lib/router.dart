@@ -7,9 +7,11 @@ import 'ui/pages/settings_page.dart';
 import 'ui/pages/circles_page.dart';
 import 'ui/pages/circle_detail_page.dart';
 import 'ui/pages/contact_edit_page.dart';
+import 'ui/pages/launch_gate.dart';
 
 class AppRoutes {
   static const onboarding = '/';
+  static const launch = '/launch';
   static const home = '/home';
   static const suggestions = '/suggestions';
   static const compose = '/compose';
@@ -26,6 +28,8 @@ class AppRouter {
     switch (settings.name) {
       case AppRoutes.onboarding:
         return MaterialPageRoute(builder: (_) => const OnboardingPage());
+      case AppRoutes.launch:
+        return MaterialPageRoute(builder: (_) => const LaunchGate());
       case AppRoutes.home:
         return MaterialPageRoute(builder: (_) => const HomePage());
       case AppRoutes.suggestions:
