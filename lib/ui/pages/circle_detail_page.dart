@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/app_state.dart';
 import '../../../models/circle.dart';
+import '../../../router.dart';
 
 class CircleDetailPage extends StatefulWidget {
   final String circleId;
@@ -33,7 +34,7 @@ class _CircleDetailPageState extends State<CircleDetailPage> {
         .where((c) => !c.circleIds.contains(circle.id))
         .toList();
 
-    // --- Filtering for All Contacts ---
+    // Filtering for All Contacts
     final q = _query.trim().toLowerCase();
     bool matchesQuery(c) {
       if (q.isEmpty) return true;
@@ -98,12 +99,29 @@ class _CircleDetailPageState extends State<CircleDetailPage> {
                       ? m.phones.first
                       : (m.emails.isNotEmpty ? m.emails.first : ''),
                 ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.remove_circle_outline),
-                  onPressed: () async {
-                    await state.removeContactFromCircle(m.id, circle.id);
-                    setState(() {});
-                  },
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      tooltip: 'View / edit',
+                      icon: const Icon(Icons.edit_outlined),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.contactEdit,
+                          arguments: {'contactId': m.id},
+                        );
+                      },
+                    ),
+                    IconButton(
+                      tooltip: 'Remove from circle',
+                      icon: const Icon(Icons.remove_circle_outline),
+                      onPressed: () async {
+                        await state.removeContactFromCircle(m.id, circle.id);
+                        setState(() {});
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -161,9 +179,7 @@ class _CircleDetailPageState extends State<CircleDetailPage> {
             value: _onlyWithPhone,
             onChanged: (v) => setState(() => _onlyWithPhone = v),
           ),
-
           const SizedBox(height: 8),
-
           if (filteredNonMembers.isEmpty)
             const Padding(
               padding: EdgeInsets.only(top: 8),
@@ -180,12 +196,29 @@ class _CircleDetailPageState extends State<CircleDetailPage> {
                       ? c.phones.first
                       : (c.emails.isNotEmpty ? c.emails.first : ''),
                 ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.add_circle_outline),
-                  onPressed: () async {
-                    await state.addContactToCircle(c.id, circle.id);
-                    setState(() {});
-                  },
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      tooltip: 'View / edit',
+                      icon: const Icon(Icons.edit_outlined),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.contactEdit,
+                          arguments: {'contactId': c.id},
+                        );
+                      },
+                    ),
+                    IconButton(
+                      tooltip: 'Add to circle',
+                      icon: const Icon(Icons.add_circle_outline),
+                      onPressed: () async {
+                        await state.addContactToCircle(c.id, circle.id);
+                        setState(() {});
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),

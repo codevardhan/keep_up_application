@@ -118,6 +118,16 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> upsertContact(AppContact updated) async {
+    final i = contacts.indexWhere((c) => c.id == updated.id);
+    if (i >= 0) {
+      contacts[i] = updated;
+    } else {
+      contacts = [...contacts, updated];
+    }
+    await setContacts(contacts); // your existing setter persists & notifies
+  }
+
   // --- Tag/untag contact in circle ---
   Future<void> addContactToCircle(String contactId, String circleId) async {
     final idx = contacts.indexWhere((c) => c.id == contactId);

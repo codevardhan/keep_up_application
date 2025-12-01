@@ -6,7 +6,7 @@ import 'ui/pages/compose_page.dart';
 import 'ui/pages/settings_page.dart';
 import 'ui/pages/circles_page.dart';
 import 'ui/pages/circle_detail_page.dart';
-
+import 'ui/pages/contact_edit_page.dart';
 
 class AppRoutes {
   static const onboarding = '/';
@@ -16,6 +16,7 @@ class AppRoutes {
   static const settings = '/settings';
   static const circles = '/circles';
   static const circleDetail = '/circle';
+  static const contactEdit = '/contact';
 }
 
 class AppRouter {
@@ -43,6 +44,12 @@ class AppRouter {
         final circleId = args?['circleId'] as String;
         return MaterialPageRoute(
           builder: (_) => CircleDetailPage(circleId: circleId),
+        );
+      case AppRoutes.contactEdit:
+        final args = settings.arguments as Map?;
+        final id = args?['contactId'] as String;
+        return MaterialPageRoute(
+          builder: (_) => ContactEditPage(contactId: id),
         );
       default:
         return MaterialPageRoute(
