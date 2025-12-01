@@ -51,6 +51,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
     }
   }
 
+  void _finishOnboarding(AppState appState) {
+    appState.setOnboardingSeen(true);
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final appState = InheritedAppState.of(context);
@@ -78,8 +85,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 importing: importing,
                 importedCount: importedContacts.length,
                 onImport: () => _doImport(appState),
-                onSkipOrFinish: () =>
-                    Navigator.pushReplacementNamed(context, AppRoutes.home),
+                onSkipOrFinish: () => _finishOnboarding(appState), // <-- step 4
               ),
       ),
     );

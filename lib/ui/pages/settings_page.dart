@@ -89,6 +89,22 @@ class SettingsPage extends StatelessWidget {
 
           const Divider(height: 24),
 
+          ListTile(
+            leading: const Icon(Icons.restart_alt),
+            title: const Text('Reset onboarding'),
+            subtitle: const Text('Show onboarding on next launch'),
+            onTap: () async {
+              await InheritedAppState.of(context).setOnboardingSeen(false);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Onboarding reset')),
+                );
+              }
+            },
+          ),
+          
+          const Divider(height: 24),
+
           // ---- Info ----
           const Padding(
             padding: EdgeInsets.fromLTRB(4, 8, 4, 4),

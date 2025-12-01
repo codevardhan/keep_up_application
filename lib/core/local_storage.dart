@@ -12,6 +12,7 @@ class LocalStorage {
   static const _kCircles = 'circles_v1';
   static const _kInteractions = 'interactions_v1';
   static const _kPrefs = 'prefs_v1';
+  static const _kOnboardingSeen = 'onboarding_seen_v1';
 
   SharedPreferences? _prefs;
 
@@ -21,6 +22,17 @@ class LocalStorage {
   List<Interaction>? _interactionsCache;
 
   Prefs? _prefsCache;
+
+
+  Future<bool> loadOnboardingSeen() async {
+    final p = await _getPrefs();
+    return p.getBool(_kOnboardingSeen) ?? false;
+  }
+
+  Future<void> saveOnboardingSeen(bool seen) async {
+    final p = await _getPrefs();
+    await p.setBool(_kOnboardingSeen, seen);
+  }
 
   // Load / Save
   Future<Prefs> loadPrefs() async {

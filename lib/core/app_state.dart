@@ -20,7 +20,7 @@ class AppState extends ChangeNotifier {
   List<Circle> circles = [];
   List<Interaction> interactions = [];
   Prefs prefs = const Prefs();
-
+  bool onboardingSeen = false;
   final _uuid = const Uuid();
 
   Future<void> init() async {
@@ -29,6 +29,7 @@ class AppState extends ChangeNotifier {
     circles = await _storage.loadCircles();
     interactions = await _storage.loadInteractions();
     prefs = await _storage.loadPrefs();
+    onboardingSeen = await _storage.loadOnboardingSeen();
     notifyListeners();
   }
 
@@ -46,6 +47,12 @@ class AppState extends ChangeNotifier {
 
   Future<void> toggleHolidayAware() =>
       setPrefs(prefs.copyWith(holidayAware: !prefs.holidayAware));
+
+  Future<void> setOnboardingSeen(bool seen) async {
+    onboardingSeen = seen;
+    await _storage.saveOnboardingSeen(seen);
+    notifyListeners();
+  }
 
   // Re-import contacts (permission-friendly; will use your existing filters)
   Future<int> reimportContacts() async {
