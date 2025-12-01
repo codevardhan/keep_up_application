@@ -1,7 +1,13 @@
+// lib/ui/pages/settings/settings_page.dart
 import 'package:flutter/material.dart';
 import '../../../core/app_state.dart';
 import '../../../services/contacts_sync.dart';
 import '../../../models/prefs.dart';
+
+// NEW:
+import '../../../services/notification_service.dart';
+import '../../../services/ai_suggestion_service.dart';
+import '../../../models/goal.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -54,6 +60,77 @@ class SettingsPage extends StatelessWidget {
 
           const Divider(height: 24),
 
+          // ---- Demo ----
+          const Padding(
+            padding: EdgeInsets.fromLTRB(4, 8, 4, 4),
+            child: Text('Demo', style: TextStyle(fontWeight: FontWeight.w600)),
+          ),
+          ListTile(
+            leading: const Icon(Icons.notifications_active_outlined),
+            title: const Text('Send demo suggestion notification'),
+            subtitle: const Text('Picks a contact in your circles and uses AI'),
+            onTap: () async {
+              // Pick a contact: prefer someone in a circle; else first contact.
+              final contacts = appState.contacts;
+              if (contacts.isEmpty) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('No contacts available. Import first.'),
+                    ),
+                  );
+                }
+                return;
+              }
+
+              // Prefer a contact that belongs to at least one circle.
+              final inCircle = contacts.where((c) => c.circleIds.isNotEmpty);
+              final contact = inCircle.isNotEmpty
+                  ? inCircle.first
+                  : contacts.first;
+
+              // Build context for AI
+              final goal = appState.activeGoal?.type ?? GoalType.friends;
+              final circleNames = appState.circles
+                  .where((ci) => contact.circleIds.contains(ci.id))
+                  .map((ci) => ci.name)
+                  .toList();
+
+              // Generate the full compose text (Claude with local fallback)
+              final message = await AiSuggestionService.generateNotificationLine(
+                goalType: goal,
+                circleNames: circleNames,
+                lastNote: contact.notes,
+              );
+
+              // Short preview for notification body
+              String preview = message.split(RegExp(r'[.!?]')).first.trim();
+              if (preview.length > 60) preview = '${preview.substring(0, 60)}…';
+
+    
+              await NotificationService.showSuggestionNow(
+                contactId: contact.id,
+                title: 'Suggested: ${contact.displayName}',
+                body: preview.isEmpty ? 'Tap to open a quick message' : preview,
+                prefilledMessage: "",
+                longText: message,
+                tag: contact.id, 
+              );
+
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Demo notification sent for ${contact.displayName}.',
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+
+          const Divider(height: 24),
+
           // ---- Contacts sync ----
           const Padding(
             padding: EdgeInsets.fromLTRB(4, 8, 4, 4),
@@ -102,7 +179,7 @@ class SettingsPage extends StatelessWidget {
               }
             },
           ),
-          
+
           const Divider(height: 24),
 
           // ---- Info ----

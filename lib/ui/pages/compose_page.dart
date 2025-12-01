@@ -5,20 +5,27 @@ import '../widgets/note_sheet.dart';
 
 class ComposePage extends StatefulWidget {
   final String? contactId;
-  const ComposePage({super.key, this.contactId});
+  final String? initialText; // <-- new: prefill from notifications, etc.
+
+  const ComposePage({super.key, this.contactId, this.initialText});
 
   @override
   State<ComposePage> createState() => _ComposePageState();
 }
 
 class _ComposePageState extends State<ComposePage> {
-  final TextEditingController controller = TextEditingController();
+  late final TextEditingController controller;
   String _tone = 'warm'; // warm | brief | pro
+
+  /// When true, we won’t auto-override the editor from tone changes.
+  bool _isPrefilled = false;
 
   @override
   void initState() {
     super.initState();
-    // Initial text set in build() once we know AppState & contact/goal
+    controller = TextEditingController(text: widget.initialText ?? '');
+    _isPrefilled =
+        (widget.initialText != null && widget.initialText!.trim().isNotEmpty);
   }
 
   @override
@@ -46,9 +53,9 @@ class _ComposePageState extends State<ComposePage> {
 
     switch (tone) {
       case 'brief':
-        return 'Hi${firstName == null ? '' : ' ${firstName}'}—could we find 10 minutes this week to $g?';
+        return 'Hi${firstName == null ? '' : ' $firstName'}—could we find 10 minutes this week to $g?';
       case 'pro':
-        return 'Hello${firstName == null ? '' : ' ${firstName}'}, I’m hoping to $g this week. Would a short call work for you?';
+        return 'Hello${firstName == null ? '' : ' $firstName'}, I’m hoping to $g this week. Would a short call work for you?';
       case 'warm':
       default:
         return 'Hey ${firstName ?? ''}! I’m hoping to $g this week—could we grab 10 minutes to chat?';
@@ -57,11 +64,11 @@ class _ComposePageState extends State<ComposePage> {
 
   /// Apply (or re-apply) the template when tone/contact/goal changes.
   void _applyTemplate(AppState state) {
+    if (_isPrefilled) return; // don’t clobber AI/notification text
     final contact = _getContact(state);
     final first = contact?.displayName.split(' ').first;
     final goal = state.activeGoal?.label;
     final text = _templateFor(tone: _tone, firstName: first, goal: goal);
-    // Only set if user hasn't edited; for MVP we’ll overwrite on tone change.
     controller.text = text;
     controller.selection = TextSelection.fromPosition(
       TextPosition(offset: controller.text.length),
@@ -89,7 +96,6 @@ class _ComposePageState extends State<ComposePage> {
     AppState state,
     String? contactId,
   ) async {
-    // Offer to mark contacted with Undo
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: const Text('Pretend message sent. Mark as contacted today?'),
@@ -126,14 +132,27 @@ class _ComposePageState extends State<ComposePage> {
     );
   }
 
+  Future<void> _afterSendAddNote({
+    required BuildContext context,
+    required AppState state,
+    required String type, // 'sms' | 'whatsapp' | 'call'
+    required String? contactId,
+  }) async {
+    if (!mounted || contactId == null) return;
+    final text = await showNoteSheet(context);
+    if (text != null && text.trim().isNotEmpty) {
+      await state.addInteraction(contactId: contactId, type: type, note: text);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = InheritedAppState.of(context);
     final title = _contactName(state);
     final cv = _contactView(state);
 
-    // If first build or tone changed, initialize/refresh template once here.
-    if (controller.text.isEmpty) {
+    // Initialize template if this is the first build and not prefilled
+    if (controller.text.isEmpty && !_isPrefilled) {
       _applyTemplate(state);
     }
 
@@ -143,6 +162,23 @@ class _ComposePageState extends State<ComposePage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            if (_isPrefilled)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  'Suggested text — edit before sending.',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ),
             SegmentedButton<String>(
               segments: const [
                 ButtonSegment(value: 'warm', label: Text('Warm')),
@@ -165,6 +201,10 @@ class _ComposePageState extends State<ComposePage> {
                 border: OutlineInputBorder(),
                 hintText: 'Type or edit your message…',
               ),
+              onChanged: (_) {
+                // User typed → treat as custom text and stop auto-overwriting
+                if (!_isPrefilled) _isPrefilled = true;
+              },
             ),
 
             const SizedBox(height: 12),
@@ -185,23 +225,17 @@ class _ComposePageState extends State<ComposePage> {
                           );
                           if (!mounted) return;
                           await _showMarkSnack(context, state, cv.id);
-                          final text = await showNoteSheet(context);
-                          if (text != null &&
-                              text.trim().isNotEmpty &&
-                              cv.id != null) {
-                            await state.addInteraction(
-                              contactId: cv.id!,
-                              type: 'sms',
-                              note: text,
-                            );
-                          }
+                          await _afterSendAddNote(
+                            context: context,
+                            state: state,
+                            type: 'sms',
+                            contactId: cv.id,
+                          );
                           if (mounted) Navigator.pop(context);
                         },
                 ),
                 OutlinedButton.icon(
-                  icon: const Icon(
-                    Icons.chat,
-                  ), // Material has no WhatsApp glyph
+                  icon: const Icon(Icons.chat), // no WA glyph in Material
                   label: const Text('WhatsApp'),
                   onPressed: (cv.phone == null)
                       ? null
@@ -213,6 +247,12 @@ class _ComposePageState extends State<ComposePage> {
                           );
                           if (!mounted) return;
                           await _showMarkSnack(context, state, cv.id);
+                          await _afterSendAddNote(
+                            context: context,
+                            state: state,
+                            type: 'whatsapp',
+                            contactId: cv.id,
+                          );
                           if (mounted) Navigator.pop(context);
                         },
                 ),
@@ -225,6 +265,12 @@ class _ComposePageState extends State<ComposePage> {
                           await launchCall(context, cv.phone!);
                           if (!mounted) return;
                           await _showMarkSnack(context, state, cv.id);
+                          await _afterSendAddNote(
+                            context: context,
+                            state: state,
+                            type: 'call',
+                            contactId: cv.id,
+                          );
                           if (mounted) Navigator.pop(context);
                         },
                 ),
@@ -238,6 +284,12 @@ class _ComposePageState extends State<ComposePage> {
               child: FilledButton(
                 onPressed: () async {
                   await _showMarkSnack(context, state, cv.id);
+                  await _afterSendAddNote(
+                    context: context,
+                    state: state,
+                    type: 'generic',
+                    contactId: cv.id,
+                  );
                   if (mounted) Navigator.pop(context);
                 },
                 child: const Text('Send'),

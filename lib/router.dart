@@ -7,6 +7,7 @@ import 'ui/pages/settings_page.dart';
 import 'ui/pages/circles_page.dart';
 import 'ui/pages/circle_detail_page.dart';
 import 'ui/pages/contact_edit_page.dart';
+import 'package:flutter/material.dart';
 
 class AppRoutes {
   static const onboarding = '/';
@@ -19,6 +20,8 @@ class AppRoutes {
   static const contactEdit = '/contact';
 }
 
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+
 class AppRouter {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -29,11 +32,11 @@ class AppRouter {
       case AppRoutes.suggestions:
         return MaterialPageRoute(builder: (_) => const SuggestionsPage());
       case AppRoutes.compose:
-              final args = settings.arguments as Map<String, dynamic>?;
-              final contactId = args?['contactId'] as String?;
-              return MaterialPageRoute(
-                builder: (_) => ComposePage(contactId: contactId),
-              );
+        final args = settings.arguments as Map<String, dynamic>?;
+        final contactId = args?['contactId'] as String?;
+        return MaterialPageRoute(
+          builder: (_) => ComposePage(contactId: contactId),
+        );
 
       case AppRoutes.settings:
         return MaterialPageRoute(builder: (_) => const SettingsPage());

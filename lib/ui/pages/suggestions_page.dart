@@ -6,18 +6,18 @@ import '../../../models/app_contact.dart';
 import '../../../models/goal.dart';
 import '../../../core/deeplink.dart';
 import '../widgets/note_sheet.dart';
-import '../../../services/ai_suggestion_service.dart';
-import '../widgets/suggestion_sheet.dart'; 
+import '../widgets/suggestion_sheet.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // <-- ADD THIS for Clipboard
 
 class SuggestionsPage extends StatelessWidget {
   const SuggestionsPage({super.key});
 
   int _cadenceBoost(Cadence c) {
     switch (c) {
+      case Cadence.daily:
+        return 4;
       case Cadence.weekly:
         return 3;
       case Cadence.biweekly:
@@ -94,7 +94,6 @@ class SuggestionsPage extends StatelessWidget {
         return 'De-stress & balance';
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -216,10 +215,14 @@ class SuggestionsPage extends StatelessWidget {
                                 tooltip: 'Call',
                                 icon: const Icon(Icons.phone_outlined),
                                 onPressed: () {
-                                  final number = c.phones.isNotEmpty ? c.phones.first : null;
+                                  final number = c.phones.isNotEmpty
+                                      ? c.phones.first
+                                      : null;
                                   if (number == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('No phone on file')),
+                                      const SnackBar(
+                                        content: Text('No phone on file'),
+                                      ),
                                     );
                                     return;
                                   }
@@ -230,7 +233,9 @@ class SuggestionsPage extends StatelessWidget {
                                 tooltip: 'Message',
                                 icon: const Icon(Icons.message_outlined),
                                 onPressed: () {
-                                  final number = c.phones.isNotEmpty ? c.phones.first : null;
+                                  final number = c.phones.isNotEmpty
+                                      ? c.phones.first
+                                      : null;
                                   final body =
                                       'Hey ${c.displayName.split(' ').first}! Can we catch up this week?';
                                   showModalBottomSheet(
@@ -240,13 +245,21 @@ class SuggestionsPage extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           ListTile(
-                                            leading: const Icon(Icons.sms_outlined),
+                                            leading: const Icon(
+                                              Icons.sms_outlined,
+                                            ),
                                             title: const Text('SMS'),
                                             onTap: () {
                                               Navigator.pop(context);
                                               if (number == null) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(content: Text('No phone on file')),
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'No phone on file',
+                                                    ),
+                                                  ),
                                                 );
                                                 return;
                                               }
@@ -258,13 +271,21 @@ class SuggestionsPage extends StatelessWidget {
                                             },
                                           ),
                                           ListTile(
-                                            leading: const FaIcon(FontAwesomeIcons.whatsapp),
+                                            leading: const FaIcon(
+                                              FontAwesomeIcons.whatsapp,
+                                            ),
                                             title: const Text('WhatsApp'),
                                             onTap: () {
                                               Navigator.pop(context);
                                               if (number == null) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(content: Text('No phone on file')),
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                      'No phone on file',
+                                                    ),
+                                                  ),
                                                 );
                                                 return;
                                               }
@@ -276,9 +297,13 @@ class SuggestionsPage extends StatelessWidget {
                                             },
                                           ),
                                           ListTile(
-                                            leading: const Icon(Icons.email_outlined),
+                                            leading: const Icon(
+                                              Icons.email_outlined,
+                                            ),
                                             title: const Text('Open composer'),
-                                            subtitle: const Text('Use app template & log contact'),
+                                            subtitle: const Text(
+                                              'Use app template & log contact',
+                                            ),
                                             onTap: () {
                                               Navigator.pop(context);
                                               Navigator.pushNamed(
@@ -304,7 +329,9 @@ class SuggestionsPage extends StatelessWidget {
                                   if (goalType == null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Text('Set a goal first to get AI suggestions.'),
+                                        content: Text(
+                                          'Set a goal first to get AI suggestions.',
+                                        ),
                                       ),
                                     );
                                     return;

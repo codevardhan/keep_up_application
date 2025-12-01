@@ -1,4 +1,4 @@
-enum Cadence { weekly, biweekly, monthly }
+enum Cadence { daily, weekly, biweekly, monthly }
 
 class Circle {
   final String id; // e.g., 'family', 'friends', 'mentors' (or uuid)
