@@ -25,7 +25,7 @@ class KeepUpApp extends StatefulWidget {
 }
 
 class _KeepUpAppState extends State<KeepUpApp> {
-  final appState = AppState(); // simple in-memory store
+  final appState = AppState();
   late final AppLifecycleObserver _lifecycleObserver;
 
   @override
@@ -34,9 +34,7 @@ class _KeepUpAppState extends State<KeepUpApp> {
 
     Future.microtask(() async {
       await appState.init();
-
       await DailyScheduler.maybeRunToday(appState, k: 1);
-
       _lifecycleObserver = AppLifecycleObserver(appState)..start();
     });
   }

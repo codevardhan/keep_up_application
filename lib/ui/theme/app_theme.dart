@@ -39,7 +39,15 @@ class AppColors {
 
   static const Color inputBg = Color(0xFFF3F3F5);
   static const Color switchBg = Color(0xFFCBCED4);
-  static const Color borderFade = Color(0x1A000000); // rgba(0,0,0,0.1)
+  static const Color borderFade = Color(0x1A000000);
+
+    /// Accent Background
+  static const Color e9ebef = Color(0xFFE9EBEF);
+
+  /// Input Background (very light neutral)
+  static const Color f3 = Color(0xFFF3F3F5);
+  static const Color f5 = Color(0xFFF3F3F5);
+  
 }
 
 class AppRadius {
