@@ -6,6 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'services/notification_service.dart';
 import 'services/daily_scheduler.dart';
 import 'services/app_lifecycle_observer.dart';
+import 'ui/theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,10 +54,7 @@ class _KeepUpAppState extends State<KeepUpApp> {
       state: appState,
       child: MaterialApp(
         title: 'KeepUp MVP',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-          useMaterial3: true,
-        ),
+        theme: AppTheme.light(),
         initialRoute: AppRoutes.onboarding,
         onGenerateRoute: AppRouter.onGenerateRoute,
       ),
