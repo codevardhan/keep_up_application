@@ -210,6 +210,9 @@ class _GoalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = InheritedAppState.of(context);
+    final activeGoal = state.activeGoal;
+
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 14, 14, 16),
       decoration: BoxDecoration(
@@ -246,9 +249,9 @@ class _GoalCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(AppRadius.pill),
                     border: Border.all(color: Colors.white.withOpacity(.35)),
                   ),
-                  child: const Text(
-                    'Edit',
-                    style: TextStyle(
+                  child: Text(
+                    activeGoal == null ? 'Set goal' : 'Edit',
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
                     ),
@@ -258,8 +261,10 @@ class _GoalCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
+
+          // show selected goal OR "Find your focus"
           Text(
-            goal,
+            activeGoal?.label ?? 'Find your focus',
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
@@ -272,6 +277,7 @@ class _GoalCard extends StatelessWidget {
     );
   }
 }
+
 
 class _ConnectionsCard extends StatelessWidget {
   final int done;

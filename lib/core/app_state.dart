@@ -165,22 +165,21 @@ class AppState extends ChangeNotifier {
   }
 }
 
-class InheritedAppState extends InheritedWidget {
-  final AppState state;
+class InheritedAppState extends InheritedNotifier<AppState> {
   const InheritedAppState({
     super.key,
-    required this.state,
-    required super.child,
-  });
+    required AppState state,
+    required Widget child,
+  }) : super(
+          notifier: state,
+          child: child,
+        );
 
   static AppState of(BuildContext context) {
-    final widget = context
-        .dependOnInheritedWidgetOfExactType<InheritedAppState>();
+    final widget =
+        context.dependOnInheritedWidgetOfExactType<InheritedAppState>();
     assert(widget != null, 'AppState not found in context');
-    return widget!.state;
+    return widget!.notifier!;
   }
-
-  @override
-  bool updateShouldNotify(covariant InheritedAppState oldWidget) =>
-      oldWidget.state != state;
 }
+
