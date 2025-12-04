@@ -1,6 +1,8 @@
 # KeepUp — Flutter App (iOS & Android)
 
-![App Screenshot](./docs/example.jpg)
+<p align="center">
+  <img src="./docs/example.jpg" alt="App Screenshot" height="500">
+</p>
 
 A lightweight “stay-in-touch” assistant. KeepUp helps you set connection goals, organize contacts into circles with cadences (daily/weekly/biweekly/monthly), and get **AI-generated, natural-language** nudges via local notifications.
 
