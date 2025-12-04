@@ -376,12 +376,29 @@ class SuggestionsPage extends StatelessWidget {
                                     final text = await showNoteSheet(context);
                                     if (text != null &&
                                         text.trim().isNotEmpty) {
+                                      final newNote = text.trim();
+
+                                      final existingNotes = c.notes?.trim();
+                                      final combinedNotes = [
+                                        if (existingNotes != null &&
+                                            existingNotes.isNotEmpty)
+                                          existingNotes,
+                                        newNote,
+                                      ].join('\n\n');
+
+                                      final updated = c.copyWith(
+                                        notes: combinedNotes,
+                                      );
+
                                       await state.addInteraction(
                                         contactId: c.id,
                                         type: 'call',
-                                        note: text,
+                                        note: newNote,
                                       );
+
+                                      await state.upsertContact(updated);
                                     }
+
                                     if (context.mounted) {
                                       ScaffoldMessenger.of(
                                         context,
@@ -392,7 +409,7 @@ class SuggestionsPage extends StatelessWidget {
                                   },
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                       ),
